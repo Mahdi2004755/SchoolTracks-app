@@ -169,39 +169,6 @@ Priority math and comments live in `server/services/priorityService.js`.
 
 ---
 
-## Repository setup (GitHub)
-
-Use a **GitHub `noreply` email** so commits map to your profile without exposing a personal address:
-
-```bash
-git config user.name "Mahdi Hojeij"
-git config user.email "Mahdi2004755@users.noreply.github.com"
-```
-
-### New clean repository (recommended)
-
-This project is intended to live at **[github.com/Mahdi2004755/SchoolTracks-app](https://github.com/Mahdi2004755/SchoolTracks-app)** so the contributor list stays aligned with your account only.
-
-1. On GitHub, click **New repository**, name it **`SchoolTracks-app`**, leave it **empty** (no README, no `.gitignore` template).
-2. In your project folder, connect and push:
-
-```bash
-git remote add origin https://github.com/Mahdi2004755/SchoolTracks-app.git
-git branch -M main
-git push -u origin main
-```
-
-If you prefer a different repository name, change the URL above to match. Avoid committing from tools that append a `Co-authored-by:` line unless you want that account listed as a contributor.
-
----
-
-## Stack
-
-- **Frontend:** React (Vite), Tailwind CSS, React Router  
-- **Backend:** Node.js, Express, REST API  
-- **Database:** SQLite (`better-sqlite3`), table `assignments`
-
----
 
 ## Author
 
