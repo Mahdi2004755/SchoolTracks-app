@@ -1,175 +1,205 @@
-# SchoolTracks — Smart Assignment Tracker
+# SchoolTracks
 
-SchoolTracks helps students **record assignments**, see **days until each due date**, and get a **priority score** plus plain-language **recommendations** so you know what to work on first. It also builds a **three-item “today’s study plan”** from your highest-priority open work.
+SchoolTracks is a full-stack assignment tracker that helps students organize their coursework and decide what to work on first. It calculates a priority score for each assignment based on its due date, weight, completion status, current course grade, and estimated study time.
 
----
+## Features
 
-### Copy into GitHub: repository “About” description
+- Add, edit, and delete assignments
+- Track deadlines and completion status
+- Calculate a priority score for each assignment
+- Generate recommendations based on upcoming work
+- Create a daily study plan using the top three priorities
+- Filter assignments by course, status, due date, and weight
+- Sort assignments by priority, due date, course, weight, or status
+- Switch between table and card views
+- Estimate how an assignment may affect a course grade
+- Store assignment data locally using SQLite
 
-Use this short line in your repo settings (**Gear icon → General → Description** on [SchoolTracks-app](https://github.com/Mahdi2004755/SchoolTracks-app)):
+## Tech Stack
 
-> **Student assignment tracker with smart priority scoring, daily top-3 study plan, filters, sorting, and a grade-impact calculator. Run locally with Node.js: React + Tailwind frontend, Express + SQLite API.**
+### Frontend
 
-*(GitHub allows up to 350 characters; the line above is under that limit.)*
+- React
+- Tailwind CSS
+- Vite
 
----
+### Backend
 
-## What you need first
+- Node.js
+- Express
+- SQLite
 
-1. **[Node.js](https://nodejs.org/)** (LTS recommended, v18 or newer). This installs `node` and `npm`.
-2. A terminal (PowerShell, Command Prompt, or the built-in terminal in your code editor).
-3. This repository cloned or downloaded on your computer.
+## Getting Started
 
-Check versions:
+### Requirements
+
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/) version 18 or newer
+- npm
+- Git
+
+You can check your installed versions with:
 
 ```bash
 node -v
 npm -v
+git --version
 ```
 
----
+### Clone the Repository
 
-## Install (one time per machine)
+```bash
+git clone https://github.com/Mahdi2004755/SchoolTracks-app.git
+cd SchoolTracks-app
+```
 
-Open a terminal in the **project root** (the folder that contains `client/`, `server/`, and `package.json`):
+If you downloaded the project as a ZIP file, extract it and open the project folder in your terminal.
+
+### Install Dependencies
+
+From the main project folder, run:
 
 ```bash
 npm run install:all
 ```
 
-That installs dependencies for the API, the web app, and the helper script used for `npm run dev`.
+This installs the dependencies for both the frontend and backend.
 
----
-
-## Run the app
-
-From the same project root:
+### Run the Application
 
 ```bash
 npm run dev
 ```
 
-Leave this running. It starts:
+Once the application starts, open the following links:
 
-| Service | URL | Purpose |
-|--------|-----|--------|
-| **Web app** | [http://localhost:5173](http://localhost:5173) | What you use in the browser |
-| **API** | [http://localhost:4000](http://localhost:4000) | Saves assignments (SQLite database) |
+- Web app: [http://localhost:5173](http://localhost:5173)
+- API: [http://localhost:4000](http://localhost:4000)
+- API health check: [http://localhost:4000/health](http://localhost:4000/health)
 
-**Health check:** open [http://localhost:4000/health](http://localhost:4000/health) — you should see JSON like `{"ok":true,"service":"SchoolTracks API"}`.
+To stop the application, press `Ctrl+C` in the terminal.
 
-If the page says it cannot load assignments, the API is probably not running or port `4000` is blocked — fix `npm run dev` first.
+## How It Works
 
-**Stop the app:** in the terminal, press `Ctrl+C`.
+### Managing Assignments
 
----
+Users can add assignments with the following information:
 
-## How to use SchoolTracks (for students)
+- Assignment title
+- Course name
+- Due date
+- Weight toward the final grade
+- Current course grade
+- Expected assignment grade
+- Completion status
+- Estimated study time
 
-### Layout
+Assignments can be edited or deleted at any time.
 
-- **Left sidebar (desktop)** or **top area (mobile):** switch between **Dashboard** and **Grade impact calculator**.
-- The **Dashboard** is where you manage assignments. The calculator is a separate quick tool (also duplicated at the bottom of the dashboard).
+### Priority System
 
-### Add an assignment
+Each open assignment receives a priority score from 0 to 100. A higher score means the assignment should be handled sooner.
 
-1. Click **+ Add assignment**.
-2. Fill in the form:
-   - **Title** — e.g. “Midterm”, “Lab report”.
-   - **Course name** — e.g. “BIOL 1101”.
-   - **Due date** — pick the deadline.
-   - **Weight (% of final grade)** — how much this item counts (0–100).
-   - **Current grade in course (%)** — your overall standing in that class (used for “at risk” and priority).
-   - **Expected grade on this assignment (%)** — what you think you might get; used for the impact-style math on the dashboard.
-   - **Completion status** — *Not started*, *In progress*, or *Completed*.
-   - **Estimated study hours** — how long you think the work will take.
-3. Click **Add assignment**. The list updates and **priority** and **recommendations** refresh automatically.
+The score considers factors such as:
 
-**Tip:** When something is fully done, set status to **Completed**. Completed items get **priority 0** and drop out of the “today’s study plan” so the app focuses on what is left.
+- How close the due date is
+- How much the assignment is worth
+- The current grade in the course
+- The assignment’s completion status
+- The estimated amount of work required
 
-### Read the dashboard
+Completed assignments receive a priority score of 0 and are removed from the daily study plan.
 
-- **Smart recommendation** — one highlighted sentence based on your data (due soon, heavy weight, low course grade, etc.).
-- **Today’s study plan** — the **top three** open assignments by priority score. Treat these as suggested focus blocks for today.
-- **Filters**
-  - **Course** — show one class only.
-  - **Status** — not started / in progress / completed.
-  - **Due within 7 days** — only soon deadlines.
-  - **High weight (≥ 20%)** — only big pieces of the grade.
-- **Sort by** — due date, course name, weight, **priority score**, or status.
-- **Table vs Cards** — same data; pick the view you like.
+The priority logic can be found in:
 
-### Priority score and badges
+```text
+server/services/priorityService.js
+```
 
-- **Priority** is a **0–100** score (higher = tackle sooner). **Completed** work shows **0**.
-- **At risk** appears when your **current course grade** is below **60%** — a nudge to protect GPA in that class.
-- Other small tags call out **due within 7 days** or **high weight** on cards when relevant.
+### Daily Study Plan
 
-### Edit or delete
+SchoolTracks automatically selects the three highest-priority open assignments and adds them to the daily study plan. This gives students a simple starting point when deciding what to work on.
 
-- **Edit** opens the same form with saved values; save to update.
-- **Delete** asks for confirmation, then removes the row permanently.
+### Grade Impact Calculator
 
-### Grade impact calculator
+The grade-impact calculator estimates how many percentage points an assignment could contribute to the final course grade.
 
-Formula used in the UI (simple planning number, not a full transcript model):
+The calculation is:
 
-**estimated impact points ≈ assignment weight (%) × expected grade (0–100 scale)**
+```text
+Contribution = (Assignment weight ÷ 100) × Expected grade
+```
 
-Example: 25% weight × 88 expected → `25 × 88 = 2200` style “points” for comparison between assignments. Adjust the two sliders/inputs to compare scenarios.
+For example, an expected grade of 88% on an assignment worth 25% would contribute:
 
----
+```text
+(25 ÷ 100) × 88 = 22 percentage points
+```
 
-## Where your data is stored
+This is intended as a planning estimate and does not replace an official course-grade calculation.
 
-SQLite file (created automatically):
+## Data Storage
 
-`server/data/assignments.db`
+Assignment data is stored locally in a SQLite database:
 
-It is listed in `.gitignore` so your grades and titles are **not** pushed to GitHub by default.
+```text
+server/data/assignments.db
+```
 
----
+The database is included in `.gitignore`, so personal assignment and grade information is not uploaded to GitHub.
 
-## Production build (optional)
+## API Endpoints
 
-Build the React app for static hosting:
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/assignments` | Returns all assignments |
+| `POST` | `/assignments` | Creates a new assignment |
+| `PUT` | `/assignments/:id` | Updates an existing assignment |
+| `DELETE` | `/assignments/:id` | Deletes an assignment |
+| `GET` | `/assignments/priorities` | Returns prioritized open assignments and the daily study plan |
+| `GET` | `/assignments/impact-preview` | Calculates an estimated grade impact |
+
+## Production Build
+
+To create a production build of the frontend, run:
 
 ```bash
 npm run build
 ```
 
-Output is in `client/dist/`. You would still need the API running somewhere and configure the frontend to call that API URL (advanced; local dev does not require this).
+The completed build will be created in:
 
----
+```text
+client/dist
+```
 
-## REST API (for developers)
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/assignments` | List assignments (priority scores refreshed) |
-| `POST` | `/assignments` | Create assignment |
-| `PUT` | `/assignments/:id` | Update assignment |
-| `DELETE` | `/assignments/:id` | Delete assignment |
-| `GET` | `/assignments/priorities` | Headline, sorted open work, top 3 “today’s plan” |
-| `GET` | `/assignments/impact-preview?weight=&expected_grade=` | Optional impact helper |
-
-Priority math and comments live in `server/services/priorityService.js`.
-
----
+The backend must still be hosted separately for the production version to save and retrieve assignments.
 
 ## Troubleshooting
 
-| Problem | What to try |
-|--------|-------------|
-| `npm` is not recognized | Install Node.js from [nodejs.org](https://nodejs.org/) and reopen the terminal. |
-| Blank errors in the browser | Confirm `npm run dev` is running and visit `/health` on port 4000. |
-| Port 4000 or 5173 in use | Close other apps using those ports, or change `PORT` in `server/index.js` and the `proxy` in `client/vite.config.js` to match. |
-| `better-sqlite3` install errors on Windows | Install **“Desktop development with C++”** in Visual Studio Build Tools, or use Node LTS; see [better-sqlite3](https://github.com/WiseLibs/better-sqlite3/blob/master/docs/troubleshooting.md) troubleshooting. |
-| **Extra names under “Contributors” on GitHub** | Contributors come from **commit metadata** (for example a `Co-authored-by:` line in the commit message). Use commits that only list you as author, or turn off your editor’s option to append co-authors to commits, then push again. |
+### The `npm` command is not recognized
 
----
+Install the latest LTS version of [Node.js](https://nodejs.org/), then close and reopen your terminal.
 
+### The page cannot load assignments
+
+Make sure `npm run dev` is still running. You can also open the API health check:
+
+[http://localhost:4000/health](http://localhost:4000/health)
+
+If the API is running correctly, it should return a message confirming that the service is available.
+
+### A port is already being used
+
+Make sure another application is not already using port `4000` or `5173`. Close the other application, then run the project again.
+
+### SQLite installation fails
+
+Try using the latest Node.js LTS version. On Windows, some SQLite packages may also require Visual Studio Build Tools.
 
 ## Author
 
-[Mahdi2004755 / SchoolTracks-app on GitHub](https://github.com/Mahdi2004755/SchoolTracks-app)
+Created by [Mahdi2004755](https://github.com/Mahdi2004755).
+
+Project repository: [SchoolTracks-app](https://github.com/Mahdi2004755/SchoolTracks-app)
